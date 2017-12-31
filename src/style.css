@@ -7,22 +7,15 @@ body {
 
 
 #autocomplete {
-    width: 272px;
+    width: 20%;
     text-align: center;
   }
 
 .pac-container{
-  width:272px !important;
-  left:545px !important;
-  top:135px !important;
+  width:20% !important;
+
 }
 
-.weather {
-  text-align: center;
-  font-weight: 100;
-  font-size: 2em;
-  color: #fff;
-}
 
 h1 {
   margin-bottom: 1.375em;

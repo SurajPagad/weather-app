@@ -116,7 +116,7 @@ class App extends React.Component {
       status = <div>{this.state.status}</div>;
     }
     return (
-      <div>
+      <div className="weather">
         <Script
           url="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2cgSHq1pOt88qxuDRRaD7spdNZsemuGQ&libraries=places"
           onLoad={this.handleScriptLoad.bind(this)}
@@ -133,7 +133,7 @@ class App extends React.Component {
         />
       
 
-        <div className="weather">
+        <div>
           <p>{description || status}</p>
           <p>{temp || status}</p>
           <Toggle onToggle={on => this.setState({ on })} />
