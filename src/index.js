@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import Toggle from "./Toggle";
 import WeatherIcon from "./WeatherIcon";
-import Script from 'react-load-script';
+import Script from "react-load-script";
 import "./style.css";
 
 class App extends React.Component {
@@ -15,6 +15,7 @@ class App extends React.Component {
       tempC: 0,
       tempF: 0,
       status: "loading...",
+      searchText: "",
       lat: 0,
       long: 0,
       description: "",
@@ -28,7 +29,7 @@ class App extends React.Component {
   fetchWeather() {
     var tempC = 0;
     var tempF = 0;
-    
+
     var weatherAPI = `https://api.openweathermap.org/data/2.5/weather?lat=${this
       .lat}&lon=${this
       .long}&units=metric&appid=924d4013269e4852627c3106302c806b`;
@@ -55,12 +56,10 @@ class App extends React.Component {
   }
 
   getPlace() {
-    this.setState({ status: "loading..." });
+    this.setState({ status: "loading...", searchText: this.input.value });
 
-     var place = this.autocomplete.getPlace();
-     while (place === undefined) {
-       window.sleep(5) //pseudo code sleep method
-     }
+    var place = this.autocomplete.getPlace();
+    if(place.geometry){
       this.setState({
         address: place.formatted_address,
         lat: place.geometry.location.lat(),
@@ -69,11 +68,29 @@ class App extends React.Component {
       this.lat = place.geometry.location.lat();
       this.long = place.geometry.location.lng();
       this.fetchWeather();
-
+    }
+    
   }
 
-  handleScriptLoad() { 
-    this.autocomplete = new window.google.maps.places.Autocomplete(/** @type {!HTMLInputElement} */ (this.input), {
+  handleScriptLoad() {
+    window.google.maps.event.addDomListener(this.input, "keydown", function(e) {
+      if (
+        e.keyCode === 13 &&
+        document.getElementsByClassName("pac-item-selected").length === 0 &&
+        !e.triggered
+      ) {
+        window.google.maps.event.trigger(this, "keydown", {
+          keyCode: 40,
+          automatedDown: true
+        });
+        window.google.maps.event.trigger(this, "keydown", {
+          keyCode: 13,
+          triggered: true
+        });
+      }
+    });
+    this.autocomplete = new window.google.maps.places
+      .Autocomplete(/** @type {!HTMLInputElement} */ (this.input), {
       types: ["geocode"]
     });
     this.autocomplete.addListener("place_changed", this.getPlace);
@@ -100,21 +117,11 @@ class App extends React.Component {
     }
   }
 
-  render() {
-    var address, temp, status, description, weatherIcon;
+  handleChange(e) {
+    this.setState({ searchText: e.target.value });
+  }
 
-    if (this.state.status === "loaded") {
-      description = this.state.description;
-      weatherIcon = <WeatherIcon weatherID={this.state.weatherMain} />;
-      address = <p>{this.state.address}</p>;
-      if (this.state.on) {
-        temp = <p>{this.state.tempC}&#176;C</p>;
-      } else {
-        temp = <p>{this.state.tempF}&#176;F</p>;
-      }
-    } else {
-      status = <div>{this.state.status}</div>;
-    }
+  render() {
     return (
       <div className="weather">
         <Script
@@ -122,24 +129,35 @@ class App extends React.Component {
           onLoad={this.handleScriptLoad.bind(this)}
         />
         <h1>Weather</h1>
-      
-        <input
-          id="autocomplete"
-          ref={input => {
-            this.input = input;
-          }}
-          placeholder="Enter your address"
-          type="text"
-        />
-      
-
-        <div>
-          <p>{description || status}</p>
-          <p>{temp || status}</p>
-          <Toggle onToggle={on => this.setState({ on })} />
-          <p>{address || status}</p>
+        <div className="input-wrapper">
+          <input
+            onChange={this.handleChange.bind(this)}
+            ref={input => {
+              this.input = input;
+            }}
+            placeholder="Enter your address"
+            type="text"
+          />
+          <span className="input-highlight">
+            {this.state.searchText.replace(/ /g, "\u00a0")}
+          </span>
         </div>
-        {weatherIcon || status}
+
+        {this.state.status === "loaded" ? (
+          <div>
+            <p>{this.state.description}</p>
+            {this.state.on ? (
+              <p>{this.state.tempC}&#176;C</p>
+            ) : (
+              <p>{this.state.tempF}&#176;F</p>
+            )}
+            <Toggle onToggle={on => this.setState({ on })} />
+            <p>{this.state.address}</p>
+            <WeatherIcon weatherID={this.state.weatherMain} />
+          </div>
+        ) : (
+          <p>{this.state.status}</p>
+        )}
       </div>
     );
   }
