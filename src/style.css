@@ -17,7 +17,8 @@ body {
 
 .input-wrapper {
   position: relative;
-  width: 500px;
+  max-width: 500px;
+  min-width: 200px;
   margin: 0px auto;
 }
 
@@ -40,7 +41,7 @@ body {
 }
 
 input {
-  height: 60px;
+  height: 40px;
   width: 100%;
   min-width: 100%;
   text-align: center;
@@ -49,7 +50,7 @@ input {
   line-height: 70px;
   background-color: transparent;
   color: white;
-  font-size: 30px;
+  font-size: inherit;
   border: none;
   outline: none;
   border-bottom: 3px solid #333333;
