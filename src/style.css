@@ -6,13 +6,6 @@ body {
 }
 
 
-#autocomplete {
-    width: 40%;
-    text-align: center;
-    line-height: 20px;
-    font: 16px arial,sans-serif;
-}
-
 /* --https://github.com/petrgazarov-- */
 
 .input-wrapper {
@@ -21,7 +14,14 @@ body {
   min-width: 200px;
   margin: 0px auto;
 }
-
+.input-clear {
+  cursor:pointer;
+  color:#fff;
+  right: 10px;
+  top:9px;
+  font-size: 20px;
+  position: absolute;
+}
 .input-highlight {
   font-size: 30px;
   -webkit-user-select: none;
@@ -42,10 +42,10 @@ body {
 
 input {
   height: 40px;
-  width: 100%;
-  min-width: 100%;
+  width: 95%;
+  margin: auto;
   text-align: center;
-  padding: 0;
+  padding-right: 25px;
   border-radius: 0;
   line-height: 70px;
   background-color: transparent;
@@ -74,7 +74,7 @@ h1 {
 }
 
 p {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 225);
   font-size: medium;
   margin: 1.3rem 0;
 }
